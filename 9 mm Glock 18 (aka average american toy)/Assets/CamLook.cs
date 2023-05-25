@@ -4,21 +4,27 @@ using UnityEngine;
 
 public class CamLook : MonoBehaviour
 {
-    public float lookSensitivity = 2f;
+    public float sensitivity = 2f;  // Mouse sensitivity
 
-    private float _xRotation = 0f;
+    private float xRotation = 0f;  // Current rotation around the X-axis
+    private float yRotation = 0f;  // Current rotation around the Y-axis
 
-    private void Update()
+    private void Start()
     {
-        float mouseX = Input.GetAxis("Mouse X") * lookSensitivity;
-        float mouseY = Input.GetAxis("Mouse Y") * lookSensitivity;
+        Cursor.lockState = CursorLockMode.Locked;
+    }
+    void Update()
+    {
+        // Read mouse input
+        float mouseX = Input.GetAxis("Mouse X") * sensitivity;
+        float mouseY = Input.GetAxis("Mouse Y") * sensitivity;
 
-        _xRotation += mouseY; // Inverted the sign
+        // Rotate the camera horizontally and vertically
+        yRotation += mouseX;
+        xRotation -= mouseY;
+        xRotation = Mathf.Clamp(xRotation, -90f, 90f);  // Limit vertical rotation to -90 to 90 degrees
 
-        _xRotation = Mathf.Clamp(_xRotation, -90f, 90f);
-
-        transform.localRotation = Quaternion.Euler(_xRotation, 0f, 0f);
-
-        transform.Rotate(Vector3.up * mouseX); // Removed the inversion
+        // Apply rotations to the camera
+        transform.localRotation = Quaternion.Euler(xRotation, yRotation, 0f);
     }
 }
